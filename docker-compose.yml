@@ -1,56 +1,46 @@
-version: '3.7'
+version: '3.8'
 
+# Services
 services:
+  # Server service
   server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    image: myapp-server
-    container_name: myapp-node-server
-    command: /usr/src/app/node_modules/.bin/nodemon server.js
-    volumes:
-      - ./server/:/usr/src/app
-      - /usr/src/app/node_modules
+    image: pradippipaliya/abc-master_server:latest
+    container_name: backend
     ports:
       - "9000:9000"
-    depends_on:
-      - mongo
-    env_file: ./server/config/.env
     environment:
-      - NODE_ENV=development
-    networks:
-      - app-network
-  mongo:
-    image: mongo
-    volumes:
-      - data-volume:/data/db
-    ports:
-      - "27017:27017"
-    networks:
-      - app-network
+      - PORT=9000
+      - DB_URL=mongodb+srv://pradippipaliya02:pradip2002@cluster0.bqa5czs.mongodb.net/
+      - JWT_SECRET_KEY=2FxXT1NTf2K1Mo4i6AOvtdI
+      - JWT_EXPIRES=7d
+      - ACTIVATION_SECRET=Hellogoodmorning
+      - SMPT_HOST=smtp.gmail.com
+      - SMPT_PORT=465
+      - SMPT_PASSWORD=hncwvkymkxfljjok
+      - SMPT_MAIL=vivek.kakadiya111@gmail.com
+      - STRIPE_API_KEY=pk_test_51NCn5ESHYEKWZyIQqCZ3bff3X7zmwAxMhwVPYqaYVl2Qyixqp6z2bUnlkaaSIB4B2qRPAX8e1fErmlpwF5dFYnVO00uBfSmn05
+      - STRIPE_SECRET_KEY=sk_test_51NCn5ESHYEKWZyIQENbUqwAbyaRJCJWz6tnTVFL0nDAVasdo0G6stYYUvVdUAo9Z1ofYOi442vPOknrKnX9CEtXc00JUn93Kpd
+    depends_on:
+      - mongodb
+
+  # Client service
   client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    image: myapp-client
-    container_name: myapp-react-client
-    command: npm start
-    volumes:
-      - ./client/:/usr/app
-      - /usr/app/node_modules
+    image: pradippipaliya/abc-master_client:latest
+    container_name: frontend
+    ports:
+      - "80:80"
     depends_on:
       - server
+
+  # Database service
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_server
+    restart: always
     ports:
-      - "3000:3000"
-    networks:
-      - app-network
-
-networks:
-    app-network:
-        driver: bridge
-
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+# Volumes define
 volumes:
-    data-volume:
-    node_modules:
-    web-root:
-      driver: local
+  mongodb_data:
