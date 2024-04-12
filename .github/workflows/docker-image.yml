@@ -53,5 +53,5 @@ jobs:
             docker pull pradippipaliya/abc-master_client:latest
             docker pull pradippipaliya/abc-master_server:latest
             pwd
-            cd /home/ubuntu/abc
+            cd /home/ubuntu/vivekrepo
             docker-compose up -d 
